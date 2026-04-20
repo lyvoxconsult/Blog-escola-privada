@@ -3,18 +3,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Article from "./pages/Article";
-import Wellness from "./pages/Wellness";
-import Travel from "./pages/Travel";
-import Creativity from "./pages/Creativity";
-import Growth from "./pages/Growth";
+import { PublicLayout } from "@/components/layout/PublicLayout";
+import Home from "./pages/Home";
 import About from "./pages/About";
-import Authors from "./pages/Authors";
+import Courses from "./pages/Courses";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import Teachers from "./pages/Teachers";
 import Contact from "./pages/Contact";
-import StyleGuide from "./pages/StyleGuide";
-import Privacy from "./pages/Privacy";
-import Terms from "./pages/Terms";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,18 +23,16 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/article/:id" element={<Article />} />
-          <Route path="/wellness" element={<Wellness />} />
-          <Route path="/travel" element={<Travel />} />
-          <Route path="/creativity" element={<Creativity />} />
-          <Route path="/growth" element={<Growth />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/authors" element={<Authors />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/style-guide" element={<StyleGuide />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/sobre" element={<About />} />
+            <Route path="/cursos" element={<Courses />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/professores" element={<Teachers />} />
+            <Route path="/contato" element={<Contact />} />
+          </Route>
+          <Route path="/login" element={<Login />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
