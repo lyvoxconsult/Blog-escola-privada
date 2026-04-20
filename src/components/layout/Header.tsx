@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
   { to: "/", label: "Início" },
@@ -16,6 +17,8 @@ const navItems = [
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
+  const { user, role } = useAuth();
+  const dashboardPath = role === "gestor" ? "/gestor/dashboard" : "/aluno/dashboard";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -43,12 +46,20 @@ export const Header = () => {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/login">Entrar</Link>
-          </Button>
-          <Button asChild size="sm" className="bg-gradient-accent hover:opacity-95 shadow-soft">
-            <Link to="/cursos">Matricule-se</Link>
-          </Button>
+          {user ? (
+            <Button asChild size="sm" className="bg-gradient-accent hover:opacity-95 shadow-soft">
+              <Link to={dashboardPath}><LayoutDashboard className="h-4 w-4 mr-1.5" /> Meu painel</Link>
+            </Button>
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/login">Entrar</Link>
+              </Button>
+              <Button asChild size="sm" className="bg-gradient-accent hover:opacity-95 shadow-soft">
+                <Link to="/cursos">Matricule-se</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         <button
