@@ -1,115 +1,74 @@
-import Header from "@/components/Header";
-import { Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { SEO } from "@/components/common/SEO";
+import { SectionHeader } from "@/components/common/SectionHeader";
+import { Card, CardContent } from "@/components/ui/card";
+import { Award, Heart, Globe2, Lightbulb, Target, Users } from "lucide-react";
 
 const About = () => {
+  const differentials = [
+    { icon: Award, title: "Certificações reconhecidas", desc: "Parcerias com Cambridge, IELTS e TOEFL para validação internacional." },
+    { icon: Heart, title: "Ensino humanizado", desc: "Cada aluno é único. Acompanhamento próximo do início ao fim da jornada." },
+    { icon: Globe2, title: "Comunidade global", desc: "Eventos, clubes de conversação e intercâmbio com alunos de outros países." },
+    { icon: Lightbulb, title: "Metodologia ativa", desc: "Aprenda fazendo. Projetos reais, debates e simulações desde o nível básico." },
+  ];
+
   return (
-    <div className="min-h-screen bg-background animate-fade-in">
-      <Header />
-      
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="mb-16 text-center space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-down">
-            About Perspective
-          </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed animate-slide-up stagger-1">
-            A space for exploring ideas, finding inspiration, and discovering new ways of seeing the world.
-          </p>
-        </div>
+    <>
+      <SEO title="Sobre nós" description="Conheça a história, a missão e os diferenciais da Lumina English Academy." />
 
-        {/* Story Section */}
-        <section className="mb-16 space-y-6 text-muted-foreground animate-slide-up stagger-2">
-          <h2 className="text-3xl font-bold text-foreground mb-6">Our Story</h2>
-          <p>
-            Perspective began with a simple question: What if we could create a space where thoughtful ideas, 
-            meaningful stories, and practical wisdom come together to enrich our daily lives?
-          </p>
-          <p>
-            In a world saturated with information, we felt the need for something different—a publication that 
-            prioritizes depth over speed, quality over quantity, and authentic connection over viral content. 
-            Perspective is our answer to that need.
-          </p>
-          <p>
-            We explore topics that matter: wellness practices that actually work, travel experiences that transform 
-            us, creative pursuits that bring joy, and personal growth strategies that lead to lasting change. 
-            Our approach is grounded in curiosity, backed by research, and enriched by lived experience.
-          </p>
-        </section>
-
-        {/* Mission Section */}
-        <section className="mb-16 rounded-2xl bg-card p-8 md:p-12">
-          <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
-          <div className="space-y-4 text-muted-foreground">
-            <p>
-              We believe that how we see the world shapes how we experience it. Perspective is dedicated to 
-              offering fresh viewpoints, practical insights, and inspiring stories that help readers:
+      <section className="bg-gradient-hero text-primary-foreground">
+        <div className="container-page py-20 md:py-28">
+          <div className="max-w-3xl">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-accent mb-4 inline-block">Nossa história</span>
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-balance">Educação que abre portas para o mundo.</h1>
+            <p className="mt-6 text-lg text-primary-foreground/80 leading-relaxed max-w-2xl">
+              Fundada em 2015, a Lumina nasceu da paixão por unir tecnologia, pedagogia e cultura para entregar uma experiência de aprendizado verdadeiramente transformadora.
             </p>
-            <ul className="space-y-3 ml-6">
-              <li className="flex items-start">
-                <span className="mr-3 mt-1">•</span>
-                <span>Cultivate mindful, balanced lifestyles that prioritize wellbeing</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-3 mt-1">•</span>
-                <span>Explore the world with curiosity and respect</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-3 mt-1">•</span>
-                <span>Express themselves authentically through creative pursuits</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-3 mt-1">•</span>
-                <span>Embrace personal growth as a lifelong journey</span>
-              </li>
-            </ul>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Values Section */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold mb-8">Our Values</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-xl bg-muted">
-              <h3 className="text-xl font-semibold mb-3">Authenticity</h3>
-              <p className="text-muted-foreground">
-                We share real experiences, honest reflections, and genuine insights—not curated perfection.
-              </p>
+      <section className="container-page py-20 md:py-28">
+        <div className="grid gap-12 md:grid-cols-2 items-start">
+          <div>
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent mb-5">
+              <Target className="h-6 w-6" />
             </div>
-            <div className="p-6 rounded-xl bg-muted">
-              <h3 className="text-xl font-semibold mb-3">Thoughtfulness</h3>
-              <p className="text-muted-foreground">
-                Every article is carefully researched, thoughtfully written, and designed to add real value.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl bg-muted">
-              <h3 className="text-xl font-semibold mb-3">Inclusivity</h3>
-              <p className="text-muted-foreground">
-                We welcome diverse perspectives and believe everyone's journey deserves respect and representation.
-              </p>
-            </div>
-            <div className="p-6 rounded-xl bg-muted">
-              <h3 className="text-xl font-semibold mb-3">Sustainability</h3>
-              <p className="text-muted-foreground">
-                We promote practices that are sustainable for individuals, communities, and the planet.
-              </p>
-            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">Nossa missão</h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Democratizar o acesso ao inglês de qualidade no Brasil, com método imersivo, professores nativos e tecnologia de ponta. Acreditamos que aprender um idioma é mais do que estudar gramática — é viver outra cultura.
+            </p>
           </div>
-        </section>
+          <div>
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/10 text-secondary mb-5">
+              <Users className="h-6 w-6" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">Nossa visão</h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Ser a escola de inglês mais admirada da América Latina, conhecida pelo impacto real na vida de cada aluno e pela excelência acadêmica reconhecida internacionalmente.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <section className="text-center py-12 rounded-2xl bg-card">
-          <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
-          <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Subscribe to receive our latest articles, insights, and inspiration directly in your inbox.
-          </p>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8">
-            <Mail className="mr-2 h-4 w-4" />
-            Subscribe Now
-          </Button>
-        </section>
-      </main>
-    </div>
+      <section className="bg-muted/40 py-20 md:py-28">
+        <div className="container-page">
+          <SectionHeader eyebrow="Diferenciais" title="O que nos torna únicos" />
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {differentials.map(({ icon: Icon, title, desc }) => (
+              <Card key={title} className="border-border/60 hover:border-accent/40 hover:shadow-soft transition-all">
+                <CardContent className="p-6">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 text-accent mb-4">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="font-display font-semibold text-lg text-primary mb-1.5">{title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 };
 

@@ -1,104 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Lumina English Academy — Design System
+   All colors in HSL. Tokens drive Tailwind via tailwind.config.ts */
 
 @layer base {
   :root {
-    /* Warm, sophisticated palette inspired by the design */
-    --background: 36 44% 96%;
-    --foreground: 0 0% 18%;
+    /* Brand */
+    --background: 0 0% 100%;
+    --foreground: 211 40% 12%;
 
-    --card: 33 40% 94%;
-    --card-foreground: 0 0% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 211 40% 12%;
 
-    --popover: 36 44% 96%;
-    --popover-foreground: 0 0% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 211 40% 12%;
 
-    --primary: 0 0% 18%;
-    --primary-foreground: 36 44% 96%;
+    /* #0A2540 azul escuro */
+    --primary: 211 73% 15%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 25 30% 70%;
-    --secondary-foreground: 0 0% 18%;
+    /* #00B4D8 azul claro */
+    --secondary: 192 100% 42%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 33 30% 88%;
-    --muted-foreground: 0 0% 40%;
+    /* #F5F7FA cinza claro */
+    --muted: 210 25% 97%;
+    --muted-foreground: 211 20% 40%;
 
-    --accent: 140 20% 50%;
-    --accent-foreground: 36 44% 96%;
+    /* #2EC4B6 verde-água */
+    --accent: 174 62% 47%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 36 44% 96%;
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 33 25% 85%;
-    --input: 33 25% 85%;
-    --ring: 0 0% 18%;
+    --success: 152 60% 40%;
+    --success-foreground: 0 0% 100%;
 
-    --radius: 1rem;
+    --warning: 38 92% 50%;
+    --warning-foreground: 211 40% 12%;
 
-    /* Custom design tokens */
-    --tag-financing: 210 50% 75%;
-    --tag-lifestyle: 140 20% 70%;
-    --tag-community: 25 35% 60%;
-    --tag-wellness: 280 30% 75%;
-    --tag-travel: 195 50% 70%;
-    --tag-creativity: 330 40% 75%;
-    --tag-growth: 50 45% 70%;
+    --border: 210 20% 90%;
+    --input: 210 20% 90%;
+    --ring: 192 100% 42%;
 
-    /* Polish design tokens */
-    --cream: 40 40% 90%;
-    --cream-foreground: 0 0% 18%;
-    --surface-elevated: 36 44% 98%;
-    --shadow-soft: 0 0% 0%;
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(211 73% 15%) 0%, hsl(211 70% 22%) 60%, hsl(192 70% 30%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(192 100% 42%), hsl(174 62% 47%));
+    --gradient-soft: linear-gradient(180deg, hsl(210 25% 97%) 0%, hsl(0 0% 100%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(211 40% 12% / 0.04);
+    --shadow-md: 0 4px 16px -4px hsl(211 40% 12% / 0.08);
+    --shadow-lg: 0 12px 32px -8px hsl(211 40% 12% / 0.12);
+    --shadow-glow: 0 0 40px hsl(192 100% 42% / 0.25);
+
+    /* Transitions */
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 211 40% 12%;
+    --sidebar-primary: 211 73% 15%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 25% 97%;
+    --sidebar-accent-foreground: 211 73% 15%;
+    --sidebar-border: 210 20% 90%;
+    --sidebar-ring: 192 100% 42%;
   }
 
   .dark {
-    --background: 0 0% 10%;
-    --foreground: 36 44% 96%;
-
-    --card: 0 0% 14%;
-    --card-foreground: 36 44% 96%;
-
-    --popover: 0 0% 10%;
-    --popover-foreground: 36 44% 96%;
-
-    --primary: 36 44% 96%;
-    --primary-foreground: 0 0% 18%;
-
-    --secondary: 25 15% 30%;
-    --secondary-foreground: 36 44% 96%;
-
-    --muted: 0 0% 20%;
-    --muted-foreground: 0 0% 60%;
-
-    --accent: 140 20% 45%;
-    --accent-foreground: 36 44% 96%;
-
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 36 44% 96%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 36 44% 96%;
-
-    /* Dark mode tag colors */
-    --tag-financing: 210 40% 45%;
-    --tag-lifestyle: 140 20% 40%;
-    --tag-community: 25 30% 40%;
-    --tag-wellness: 280 25% 45%;
-    --tag-travel: 195 40% 45%;
-    --tag-creativity: 330 35% 45%;
-    --tag-growth: 50 40% 45%;
-
-    /* Dark mode polish tokens */
-    --cream: 40 20% 25%;
-    --cream-foreground: 36 44% 96%;
-    --surface-elevated: 0 0% 16%;
-    --shadow-soft: 0 0% 0%;
+    --background: 211 40% 8%;
+    --foreground: 0 0% 98%;
+    --card: 211 40% 11%;
+    --card-foreground: 0 0% 98%;
+    --popover: 211 40% 11%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 192 100% 50%;
+    --primary-foreground: 211 73% 10%;
+    --secondary: 192 100% 42%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 211 30% 15%;
+    --muted-foreground: 210 15% 65%;
+    --accent: 174 62% 47%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 211 30% 18%;
+    --input: 211 30% 18%;
+    --ring: 192 100% 50%;
   }
 }
 
@@ -106,160 +101,40 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
-  }
-
   html {
     scroll-behavior: smooth;
   }
-
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif tracking-tight;
+    @apply font-display tracking-tight;
+  }
+  ::selection {
+    background: hsl(var(--accent) / 0.25);
+    color: hsl(var(--primary));
   }
 }
 
 @layer utilities {
-  .card-hover {
-    @apply transition-all duration-500 hover:scale-[1.02];
-    box-shadow: 0 4px 20px -4px hsl(var(--shadow-soft) / 0.1);
+  .bg-gradient-hero { background: var(--gradient-hero); }
+  .bg-gradient-accent { background: var(--gradient-accent); }
+  .bg-gradient-soft { background: var(--gradient-soft); }
+
+  .shadow-soft { box-shadow: var(--shadow-md); }
+  .shadow-elevated { box-shadow: var(--shadow-lg); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+
+  .container-page {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  .card-hover:hover {
-    box-shadow: 0 20px 40px -10px hsl(var(--shadow-soft) / 0.15);
-  }
+  .text-balance { text-wrap: balance; }
 
-  .pill-nav {
-    @apply rounded-full bg-[hsl(var(--surface-elevated))] backdrop-blur-lg border border-border/50;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-
-  .floating-button {
-    @apply w-12 h-12 rounded-full bg-[hsl(var(--cream)/0.9)] backdrop-blur-sm flex items-center justify-center text-[hsl(var(--cream-foreground))] hover:bg-[hsl(var(--cream))] hover:scale-110 transition-all duration-300;
-    box-shadow: 0 4px 12px -2px hsl(var(--shadow-soft) / 0.15);
-  }
-
-  /* Animation keyframes */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes scaleIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
-  }
-
-  .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
-  }
-
-  .animate-slide-down {
-    animation: slideDown 0.6s ease-out;
-  }
-
-  .animate-scale-in {
-    animation: scaleIn 0.5s ease-out;
-  }
-
-  /* Stagger animations */
-  .stagger-1 {
-    animation-delay: 0.1s;
-    opacity: 0;
-    animation-fill-mode: forwards;
-  }
-
-  .stagger-2 {
-    animation-delay: 0.2s;
-    opacity: 0;
-    animation-fill-mode: forwards;
-  }
-
-  .stagger-3 {
-    animation-delay: 0.3s;
-    opacity: 0;
-    animation-fill-mode: forwards;
-  }
-
-  .stagger-4 {
-    animation-delay: 0.4s;
-    opacity: 0;
-    animation-fill-mode: forwards;
-  }
-
-  .stagger-5 {
-    animation-delay: 0.5s;
-    opacity: 0;
-    animation-fill-mode: forwards;
-  }
-
-  .stagger-6 {
-    animation-delay: 0.6s;
-    opacity: 0;
-    animation-fill-mode: forwards;
-  }
-
-  .tag-financing {
-    @apply bg-[hsl(var(--tag-financing))] text-primary;
-  }
-
-  .tag-lifestyle {
-    @apply bg-[hsl(var(--tag-lifestyle))] text-primary;
-  }
-
-  .tag-community {
-    @apply bg-[hsl(var(--tag-community))] text-primary;
-  }
-
-  .tag-wellness {
-    @apply bg-[hsl(var(--tag-wellness))] text-primary;
-  }
-
-  .tag-travel {
-    @apply bg-[hsl(var(--tag-travel))] text-primary;
-  }
-
-  .tag-creativity {
-    @apply bg-[hsl(var(--tag-creativity))] text-primary;
-  }
-
-  .tag-growth {
-    @apply bg-[hsl(var(--tag-growth))] text-primary;
-  }
+  .animate-fade-in { animation: fade-in 0.5s ease-out both; }
 }

@@ -1,184 +1,156 @@
-import Header from "@/components/Header";
-import { Mail, MapPin, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { z } from "zod";
+import { SEO } from "@/components/common/SEO";
+import { SectionHeader } from "@/components/common/SectionHeader";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
 import { toast } from "sonner";
 
+const schema = z.object({
+  name: z.string().trim().min(2, "Nome muito curto").max(80),
+  email: z.string().trim().email("E-mail inválido").max(160),
+  message: z.string().trim().min(10, "Mensagem muito curta").max(1000),
+});
+
+type FormData = z.infer<typeof schema>;
+
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const [data, setData] = useState<FormData>({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const parsed = schema.safeParse(data);
+    if (!parsed.success) {
+      const errs: Partial<Record<keyof FormData, string>> = {};
+      parsed.error.issues.forEach((i) => {
+        const key = i.path[0] as keyof FormData;
+        errs[key] = i.message;
+      });
+      setErrors(errs);
+      return;
+    }
+    setErrors({});
+    setSubmitting(true);
+    // PLACEHOLDER: envio de e-mail (Resend/SendGrid)
+    await new Promise((r) => setTimeout(r, 700));
+    toast.success("Mensagem enviada!", { description: "Entraremos em contato em até 24h." });
+    setData({ name: "", email: "", message: "" });
+    setSubmitting(false);
   };
 
   return (
-    <div className="min-h-screen bg-background animate-fade-in">
-      <Header />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="mb-16 text-center space-y-6">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight animate-slide-down">
-            Get in Touch
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-slide-up stagger-1">
-            Have a question, suggestion, or just want to say hello? We'd love to hear from you.
-          </p>
+    <>
+      <SEO title="Contato" description="Fale com a Lumina English Academy. Tire dúvidas e agende sua aula experimental gratuita." />
+
+      <section className="bg-gradient-soft border-b border-border">
+        <div className="container-page py-16 md:py-20">
+          <SectionHeader eyebrow="Contato" title="Vamos conversar" description="Tire dúvidas, peça orientação ou agende uma aula gratuita. Respondemos em até 24h." />
         </div>
+      </section>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <div className="rounded-2xl bg-card p-8">
-            <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
-        <form onSubmit={handleSubmit} className="space-y-6 animate-slide-up stagger-2">
-          <div>
-                <label htmlFor="name" className="block text-sm font-medium mb-2">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="Your name"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                  placeholder="What's this about?"
-                />
-              </div>
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium mb-2">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                  placeholder="Tell us what's on your mind..."
-                />
-              </div>
-              <Button 
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-full py-6"
-              >
-                Send Message
-              </Button>
-            </form>
-          </div>
-
-          {/* Contact Information */}
-          <div className="space-y-8">
-            <div className="rounded-2xl bg-card p-8">
-              <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Email</h3>
-                    <p className="text-muted-foreground">hello@perspective.blog</p>
-                    <p className="text-muted-foreground text-sm">We'll respond within 24 hours</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Location</h3>
-                    <p className="text-muted-foreground">San Francisco, CA</p>
-                    <p className="text-muted-foreground text-sm">Remote-first team</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Phone</h3>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
-                    <p className="text-muted-foreground text-sm">Mon-Fri, 9am-5pm PST</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-2xl bg-muted p-8">
-              <h3 className="text-xl font-bold mb-4">Frequently Asked Questions</h3>
-              <div className="space-y-4 text-sm">
+      <section className="container-page py-12 md:py-16">
+        <div className="grid lg:grid-cols-2 gap-10">
+          <Card>
+            <CardContent className="p-7 md:p-9">
+              <form onSubmit={onSubmit} className="space-y-5" noValidate>
                 <div>
-                  <h4 className="font-semibold mb-1">Can I contribute to Perspective?</h4>
-                  <p className="text-muted-foreground">
-                    Yes! We welcome guest contributions. Please use the form to submit your pitch or article idea.
-                  </p>
+                  <Label htmlFor="name">Nome completo</Label>
+                  <Input
+                    id="name"
+                    value={data.name}
+                    onChange={(e) => setData((d) => ({ ...d, name: e.target.value }))}
+                    placeholder="Seu nome"
+                    aria-invalid={!!errors.name}
+                    aria-describedby={errors.name ? "name-err" : undefined}
+                    className="mt-1.5"
+                  />
+                  {errors.name && <p id="name-err" className="text-xs text-destructive mt-1">{errors.name}</p>}
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">How do I advertise with you?</h4>
-                  <p className="text-muted-foreground">
-                    For advertising inquiries, email partnerships@perspective.blog with details about your brand.
-                  </p>
+                  <Label htmlFor="email">E-mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={data.email}
+                    onChange={(e) => setData((d) => ({ ...d, email: e.target.value }))}
+                    placeholder="voce@exemplo.com"
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? "email-err" : undefined}
+                    className="mt-1.5"
+                  />
+                  {errors.email && <p id="email-err" className="text-xs text-destructive mt-1">{errors.email}</p>}
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Can I republish your content?</h4>
-                  <p className="text-muted-foreground">
-                    Please contact us for permissions and licensing. We're generally open to republishing with proper attribution.
-                  </p>
+                  <Label htmlFor="message">Mensagem</Label>
+                  <Textarea
+                    id="message"
+                    value={data.message}
+                    onChange={(e) => setData((d) => ({ ...d, message: e.target.value }))}
+                    placeholder="Conte como podemos ajudar..."
+                    rows={6}
+                    aria-invalid={!!errors.message}
+                    aria-describedby={errors.message ? "msg-err" : undefined}
+                    className="mt-1.5"
+                  />
+                  {errors.message && <p id="msg-err" className="text-xs text-destructive mt-1">{errors.message}</p>}
                 </div>
+                <Button type="submit" disabled={submitting} className="w-full bg-gradient-accent hover:opacity-95 h-11">
+                  {submitting ? "Enviando..." : (<><Send className="h-4 w-4 mr-2" /> Enviar mensagem</>)}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          <div className="space-y-6">
+            <Card>
+              <CardContent className="p-6 space-y-5">
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                    <MapPin className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-primary">Endereço</h4>
+                    <p className="text-sm text-muted-foreground">Av. Paulista, 1000 — São Paulo, SP</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-primary">Telefone</h4>
+                    <p className="text-sm text-muted-foreground">+55 (11) 4000-1000</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                    <Mail className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-primary">E-mail</h4>
+                    <p className="text-sm text-muted-foreground">hello@lumina.com</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-muted via-secondary/20 to-accent/20 flex items-center justify-center text-muted-foreground border border-border" aria-label="Mapa placeholder">
+              <div className="text-center">
+                <MapPin className="h-10 w-10 mx-auto mb-2 text-accent" />
+                <p className="text-sm font-medium">Mapa interativo</p>
+                <p className="text-xs">{/* PLACEHOLDER: integração Google Maps */}Em breve</p>
               </div>
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 };
 
