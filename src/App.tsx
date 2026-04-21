@@ -22,6 +22,13 @@ import Materials from "./pages/student/Materials";
 import ProgressPage from "./pages/student/Progress";
 import Communications from "./pages/student/Communications";
 import ManagerDashboard from "./pages/manager/Dashboard";
+import ManagerItineraries from "./pages/manager/Itineraries";
+import ManagerCommunications from "./pages/manager/Communications";
+import ManagerStudents from "./pages/manager/Students";
+import ManagerMaterials from "./pages/manager/Materials";
+import ManagerHistory from "./pages/manager/History";
+import ManagerContent from "./pages/manager/Content";
+import ManagerBlog from "./pages/manager/Blog";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +76,13 @@ const App = () => (
               }
             >
               <Route path="/gestor/dashboard" element={<ManagerDashboard />} />
+              <Route path="/gestor/itinerarios" element={<ManagerItineraries />} />
+              <Route path="/gestor/comunicacoes" element={<ManagerCommunications />} />
+              <Route path="/gestor/conteudo" element={<ManagerContent />} />
+              <Route path="/gestor/alunos" element={<ManagerStudents />} />
+              <Route path="/gestor/materiais" element={<ManagerMaterials />} />
+              <Route path="/gestor/blog" element={<ManagerBlog />} />
+              <Route path="/gestor/historico" element={<ManagerHistory />} />
             </Route>
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

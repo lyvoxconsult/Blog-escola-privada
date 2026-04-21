@@ -41,11 +41,12 @@ const studentNav = [
 const managerNav = [
   { to: "/gestor/dashboard", label: "Visão geral", icon: LayoutDashboard },
   { to: "/gestor/itinerarios", label: "Itinerários", icon: CalendarDays },
-  { to: "/gestor/comunicacoes", label: "Comunicações", icon: Megaphone },
-  { to: "/gestor/conteudo", label: "Conteúdo", icon: FileText },
+  { to: "/gestor/materiais", label: "Materiais", icon: BookOpen },
   { to: "/gestor/alunos", label: "Alunos", icon: Users },
-  { to: "/gestor/blog", label: "Blog", icon: Newspaper },
+  { to: "/gestor/comunicacoes", label: "Comunicações", icon: Megaphone },
   { to: "/gestor/historico", label: "Histórico", icon: History },
+  { to: "/gestor/blog", label: "Blog", icon: Newspaper },
+  { to: "/gestor/conteudo", label: "Conteúdo", icon: FileText },
 ];
 
 interface DashboardLayoutProps {
