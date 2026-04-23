@@ -29,6 +29,7 @@ import ManagerMaterials from "./pages/manager/Materials";
 import ManagerHistory from "./pages/manager/History";
 import ManagerContent from "./pages/manager/Content";
 import ManagerBlog from "./pages/manager/Blog";
+import ManagerCourses from "./pages/manager/Courses";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ const App = () => (
               <Route path="/gestor/alunos" element={<ManagerStudents />} />
               <Route path="/gestor/materiais" element={<ManagerMaterials />} />
               <Route path="/gestor/blog" element={<ManagerBlog />} />
+              <Route path="/gestor/cursos" element={<ManagerCourses />} />
               <Route path="/gestor/historico" element={<ManagerHistory />} />
             </Route>
 

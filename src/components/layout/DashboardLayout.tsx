@@ -14,6 +14,7 @@ import {
   FileText,
   Newspaper,
   History,
+  GraduationCap,
 } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
 import { useAuth, type AppRole } from "@/context/AuthContext";
@@ -44,6 +45,7 @@ const managerNav = [
   { to: "/gestor/materiais", label: "Materiais", icon: BookOpen },
   { to: "/gestor/alunos", label: "Alunos", icon: Users },
   { to: "/gestor/comunicacoes", label: "Comunicações", icon: Megaphone },
+  { to: "/gestor/cursos", label: "Cursos", icon: GraduationCap },
   { to: "/gestor/historico", label: "Histórico", icon: History },
   { to: "/gestor/blog", label: "Blog", icon: Newspaper },
   { to: "/gestor/conteudo", label: "Conteúdo", icon: FileText },
