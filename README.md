@@ -2,7 +2,6 @@
 
 > Sistema completo de gestão escolar — Plataforma web moderna com área pública de marketing, portal do aluno e painel do gestor.
 
-[![Deploy Status](https://img.shields.io/badge/deploy-lovable-brightgreen)](https://lovable.dev/projects/7410f81b-8218-4f2d-bb32-1ba1f84eabb2)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-cyan)](https://react.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
@@ -33,7 +32,7 @@ A **Lumina English Academy** é uma plataforma web completa para escolas de ingl
 ```bash
 # Clonar repositório
 git clone https://github.com/lyvoxconsult/Blog-escola-privada.git
-cd Blog-Escola-Privada
+cd Blog-escola-privada
 
 # Instalar dependências
 npm install
@@ -42,7 +41,7 @@ npm install
 npm run dev
 ```
 
-Acesse: **http://localhost:5173**
+Acesse: **http://localhost:8080**
 
 ---
 
@@ -105,8 +104,8 @@ src/
 │   ├── Courses.tsx                  # Cursos
 │   ├── Blog.tsx                     # Blog
 │   ├── BlogPost.tsx                 # Post individual
-│   ├── Teachers.tsx                # Professores
-│   ├── Contact.tsx                 # Contato
+│   ├── Teachers.tsx                 # Professores
+│   ├── Contact.tsx                  # Contato
 │   ├── Login.tsx                    # Login
 │   └── NotFound.tsx                 # 404
 │
@@ -124,27 +123,27 @@ src/
 │       ├── Students.tsx             # Lista de alunos
 │       ├── Materials.tsx            # Gestão de materiais
 │       ├── History.tsx              # Histórico
-│       ├── Content.tsx             # Conteúdo institucional
+│       ├── Content.tsx              # Conteúdo institucional
 │       └── Blog.tsx                 # Gestão do blog
 │
 ├── components/
 │   ├── ui/                         # Componentes Shadcn/UI (~50)
 │   ├── layout/
 │   │   ├── PublicLayout.tsx         # Layout páginas públicas
-│   │   ├── Header.tsx              # Header
+│   │   ├── Header.tsx               # Header
 │   │   ├── Footer.tsx               # Rodapé
 │   │   └── DashboardLayout.tsx      # Layout dashboard
 │   ├── common/
-│   │   ├── SEO.tsx                 # Meta tags
-│   │   ├── Logo.tsx                # Logo
-│   │   ├── LoadingState.tsx        # Loading
-│   │   ├── EmptyState.tsx          # Empty
-│   │   └── SectionHeader.tsx       # Section header
+│   │   ├── SEO.tsx                  # Meta tags
+│   │   ├── Logo.tsx                 # Logo
+│   │   ├── LoadingState.tsx         # Loading
+│   │   ├── EmptyState.tsx           # Empty
+│   │   └── SectionHeader.tsx        # Section header
 │   └── auth/
 │       └── ProtectedRoute.tsx       # Proteção de rotas
 └── hooks/
     ├── use-mobile.tsx               # Detectar mobile
-    └── use-toast.ts                # Toast
+    └── use-toast.ts                 # Toast
 ```
 
 ---
@@ -283,23 +282,18 @@ npm run preview          # Preview do build
 
 ## 📦 Deploy
 
-### Via Lovable (Recomendado)
-
-O deploy acontece automaticamente via Lovable:
-
-1. Faça push para o repositório
-2. Aguarde o deploy automático
-3. Teste em produção
-
-**URL do projeto Lovable:**
-https://lovable.dev/projects/7410f81b-8218-4f2d-bb32-1ba1f84eabb2
-
 ### Via Vercel
 
 ```bash
 npm i -g vercel
 vercel --prod
 ```
+
+### Via GitHub Pages
+
+1. Configure GitHub Actions para build
+2. Push para branch `main`
+3. Deploy automático
 
 ---
 
@@ -315,19 +309,6 @@ vercel --prod
 
 ---
 
-## 📝 Documentação Adicional
-
-- [Documentação Técnica](./DOCUMENTATION.md)
-- [Changelog](./CHANGELOG.md)
-
----
-
-## 📄 Licença
-
-MIT License — [LICENSE](./LICENSE)
-
----
-
 ## 🤝 Contribuição
 
 1. Fork o repositório
@@ -335,6 +316,12 @@ MIT License — [LICENSE](./LICENSE)
 3. Commit suas mudanças (`git commit -m 'feat: adiciona nova feature'`)
 4. Push para a branch (`git push origin feature/nova-feature`)
 5. Abra um Pull Request
+
+---
+
+## 📄 Licença
+
+MIT License — [LICENSE](./LICENSE)
 
 ---
 

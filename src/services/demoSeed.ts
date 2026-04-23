@@ -1,5 +1,5 @@
 /**
- * Garante que os usuários demo existam no Lovable Cloud.
+ * Garante que os usuários demo existam no Supabase.
  * Roda uma única vez por device (flag em localStorage).
  * Tenta signUp dos dois usuários — se já existir, ignora.
  *
