@@ -1,7 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SEO } from "@/components/common/SEO";
 import { SectionHeader } from "@/components/common/SectionHeader";
-import { courses, type Course, type Format, type Level } from "@/mocks/courses";
+import { loadCourses, type Course, type Format, type Level } from "@/services/courses";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,13 +16,31 @@ const formats: Array<"all" | Format> = ["all", "online", "presencial", "hibrido"
 const formatLabel: Record<Format, string> = { online: "Online", presencial: "Presencial", hibrido: "Híbrido" };
 
 const Courses = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
   const [level, setLevel] = useState<"all" | Level>("all");
   const [format, setFormat] = useState<"all" | Format>("all");
   const [active, setActive] = useState<Course | null>(null);
 
+  // Carregar cursos do serviço centralizado
+  useEffect(() => {
+    setCourses(loadCourses());
+    
+    // Atualizar quando houver mudanças no localStorage (gestor alterou cursos)
+    const handleStorage = () => setCourses(loadCourses());
+    window.addEventListener("storage", handleStorage);
+    
+    // Atualizar também em intervalos para pegar mudanças dentro da mesma página
+    const interval = setInterval(() => setCourses(loadCourses()), 2000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      clearInterval(interval);
+    };
+  }, []);
+
   const filtered = useMemo(
     () => courses.filter((c) => (level === "all" || c.level === level) && (format === "all" || c.format === format)),
-    [level, format]
+    [courses, level, format]
   );
 
   return (

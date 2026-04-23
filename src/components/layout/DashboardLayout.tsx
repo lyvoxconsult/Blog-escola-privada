@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/common/Logo";
 import { useAuth, type AppRole } from "@/context/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -30,6 +29,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { countUnreadCommunications } from "@/services/communications";
 
 const studentNav = [
   { to: "/aluno/dashboard", label: "Visão geral", icon: LayoutDashboard },
@@ -66,22 +66,26 @@ export const DashboardLayout = ({ role }: DashboardLayoutProps) => {
   const roleLabel = role === "gestor" ? "Gestor" : "Aluno";
 
   useEffect(() => {
-    const load = async () => {
-      const { count } = await supabase
-        .from("notifications")
-        .select("*", { count: "exact", head: true })
-        .eq("read", false);
-      setUnread(count ?? 0);
+    // Carregar contagem de não lidos do serviço centralizado
+    const updateUnread = () => {
+      const count = countUnreadCommunications(role === "gestor" ? "gestor" : user?.id ?? null);
+      setUnread(count);
     };
-    load();
-    const channel = supabase
-      .channel("notif-count")
-      .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, load)
-      .subscribe();
+
+    updateUnread();
+
+    // Atualizar quando houver mudanças no localStorage (outras páginas podem ter alterado)
+    const handleStorage = () => updateUnread();
+    window.addEventListener("storage", handleStorage);
+    
+    // Atualizar também em intervalos para pegar mudanças dentro da mesma página
+    const interval = setInterval(updateUnread, 2000);
+
     return () => {
-      supabase.removeChannel(channel);
+      window.removeEventListener("storage", handleStorage);
+      clearInterval(interval);
     };
-  }, []);
+  }, [user, role]);
 
   const onLogout = async () => {
     await signOut();

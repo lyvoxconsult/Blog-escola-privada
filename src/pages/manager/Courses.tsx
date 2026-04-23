@@ -28,24 +28,21 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Pencil, Trash2, GraduationCap, BookOpen } from "lucide-react";
 import { toast } from "sonner";
-import { courses as seedCourses, type Course, type Level, type Format } from "@/mocks/courses";
 import { EmptyState } from "@/components/common/EmptyState";
 import { SEO } from "@/components/common/SEO";
-
-const STORAGE_KEY = "lumina:courses";
+import {
+  loadCourses,
+  createCourse,
+  updateCourse,
+  deleteCourse,
+  type Course,
+  type Level,
+  type Format,
+} from "@/services/courses";
 
 const LEVELS: Level[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 const FORMATS: Format[] = ["online", "presencial", "hibrido"];
 const CATEGORIES = ["kids", "teens", "adults", "business", "exam"] as const;
-
-const loadCourses = (): Course[] => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : seedCourses;
-  } catch {
-    return seedCourses;
-  }
-};
 
 interface FormState {
   id?: string;
@@ -84,11 +81,6 @@ const ManagerCourses = () => {
   useEffect(() => {
     setItems(loadCourses());
   }, []);
-
-  const persist = (next: Course[]) => {
-    setItems(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  };
 
   const slugify = (s: string) =>
     s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -131,29 +123,7 @@ const ManagerCourses = () => {
     const topics = form.topics.split(",").map((t) => t.trim()).filter(Boolean);
 
     if (form.id) {
-      const next = items.map((c) =>
-        c.id === form.id
-          ? {
-              ...c,
-              slug,
-              title: form.title,
-              level: form.level,
-              format: form.format,
-              duration: form.duration,
-              price: form.price,
-              shortDescription: form.shortDescription,
-              description: form.description,
-              topics,
-              category: form.category,
-              highlight: form.highlight,
-            }
-          : c
-      );
-      persist(next);
-      toast.success("Curso atualizado");
-    } else {
-      const newCourse: Course = {
-        id: `c-${Date.now()}`,
+      updateCourse(form.id, {
         slug,
         title: form.title,
         level: form.level,
@@ -165,15 +135,32 @@ const ManagerCourses = () => {
         topics,
         category: form.category,
         highlight: form.highlight,
-      };
-      persist([newCourse, ...items]);
+      });
+      toast.success("Curso atualizado");
+    } else {
+      createCourse({
+        slug,
+        title: form.title,
+        level: form.level,
+        format: form.format,
+        duration: form.duration,
+        price: form.price,
+        shortDescription: form.shortDescription,
+        description: form.description,
+        topics,
+        category: form.category,
+        highlight: form.highlight,
+      });
       toast.success("Curso criado");
     }
+
+    setItems(loadCourses());
     setOpen(false);
   };
 
   const remove = (id: string) => {
-    persist(items.filter((c) => c.id !== id));
+    deleteCourse(id);
+    setItems(loadCourses());
     toast.success("Curso removido");
   };
 

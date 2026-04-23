@@ -30,20 +30,14 @@ import { Megaphone, Send, Pencil, Trash2, MessageSquare, Clock } from "lucide-re
 import { toast } from "sonner";
 import { SEO } from "@/components/common/SEO";
 import { EmptyState } from "@/components/common/EmptyState";
+import {
+  loadCommunications,
+  deleteCommunication,
+  createCommunication,
+  updateCommunication,
+  type Communication,
+} from "@/services/communications";
 import { supabase } from "@/integrations/supabase/client";
-
-const STORAGE_KEY = "lumina:communications";
-
-// Interface para comunicado no localStorage
-interface Communication {
-  id: string;
-  title: string;
-  body: string;
-  recipientId: string | null; // null = broadcast para todos
-  recipientName: string;
-  createdAt: string;
-  read: boolean;
-}
 
 interface Student {
   id: string;
@@ -63,37 +57,6 @@ const emptyForm: FormState = {
   recipient: "all",
 };
 
-// Comunicados demo para seed
-const seedCommunications: Communication[] = [
-  {
-    id: "comm-1",
-    title: "Bem-vindo ao Lumina English Academy!",
-    body: "Olá! Seja muito bem-vindo(a) à nossa escola. Estamos felizes em ter você conosco. Prepare-se para uma jornada de aprendizado incrível!",
-    recipientId: null,
-    recipientName: "Todos os alunos",
-    createdAt: new Date().toISOString(),
-    read: false,
-  },
-  {
-    id: "comm-2",
-    title: "Nova aula disponível: Intermediate Conversation",
-    body: "Uma nova aula do curso Intermediate Conversation foi disponibilizada. Acesse seu itinerário para verificar.",
-    recipientId: null,
-    recipientName: "Todos os alunos",
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    read: true,
-  },
-];
-
-const loadCommunications = (): Communication[] => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : seedCommunications;
-  } catch {
-    return seedCommunications;
-  }
-};
-
 const ManagerCommunications = () => {
   const [communications, setCommunications] = useState<Communication[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
@@ -102,7 +65,7 @@ const ManagerCommunications = () => {
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    // Carregar comunicados do localStorage
+    // Carregar comunicados do serviço centralizado
     setCommunications(loadCommunications());
 
     // Carregar alunos do Supabase (se disponível)
@@ -115,16 +78,16 @@ const ManagerCommunications = () => {
         const ids = new Set((rolesRes.data ?? []).map((r) => r.user_id));
         setStudents((profilesRes.data ?? []).filter((p) => ids.has(p.id)));
       } catch {
-        // Se falhar, usa students vazio
         setStudents([]);
       }
     };
     loadStudents();
   }, []);
 
-  const persist = (next: Communication[]) => {
-    setCommunications(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  const getRecipientName = (recipientId: string | null): string => {
+    if (!recipientId) return "Todos os alunos";
+    const student = students.find((s) => s.id === recipientId);
+    return student?.full_name ?? `Aluno (${recipientId.slice(0, 8)})`;
   };
 
   const openNew = () => {
@@ -142,12 +105,6 @@ const ManagerCommunications = () => {
     setOpen(true);
   };
 
-  const getRecipientName = (recipientId: string | null): string => {
-    if (!recipientId) return "Todos os alunos";
-    const student = students.find((s) => s.id === recipientId);
-    return student?.full_name ?? `Aluno (${recipientId.slice(0, 8)})`;
-  };
-
   const save = async () => {
     if (!form.title || !form.body) {
       toast.error("Preencha título e mensagem.");
@@ -156,46 +113,22 @@ const ManagerCommunications = () => {
 
     setSending(true);
 
-    // Se não está em modo demo, tenta salvar no banco
     try {
       const recipientId = form.recipient === "all" ? null : form.recipient;
       const recipientName = getRecipientName(recipientId);
 
       if (form.id) {
         // Editar comunicado existente
-        const next = communications.map((c) =>
-          c.id === form.id
-            ? { ...c, title: form.title, body: form.body, recipient: form.recipient, recipientId, recipientName }
-            : c
-        );
-        persist(next);
+        updateCommunication(form.id, form.title, form.body, recipientId, recipientName);
         toast.success("Comunicado atualizado");
       } else {
         // Criar novo comunicado
-        const newComm: Communication = {
-          id: `comm-${Date.now()}`,
-          title: form.title,
-          body: form.body,
-          recipientId,
-          recipientName,
-          createdAt: new Date().toISOString(),
-          read: false,
-        };
-        persist([newComm, ...communications]);
+        createCommunication(form.title, form.body, recipientId, recipientName);
         toast.success("Comunicado criado");
-
-        // Tentar salvar no banco também (para produção futura)
-        try {
-          await supabase.from("notifications").insert({
-            title: form.title,
-            body: form.body,
-            recipient_id: recipientId,
-            read: false,
-          });
-        } catch {
-          // Ignora erro do banco - já salvou no localStorage
-        }
       }
+
+      // Recarregar lista
+      setCommunications(loadCommunications());
     } catch (error) {
       toast.error("Erro ao salvar comunicado");
     } finally {
@@ -205,7 +138,9 @@ const ManagerCommunications = () => {
   };
 
   const remove = (id: string) => {
-    persist(communications.filter((c) => c.id !== id));
+    deleteCommunication(id);
+    // Recarregar lista após exclusão
+    setCommunications(loadCommunications());
     toast.success("Comunicado removido");
   };
 
@@ -255,7 +190,7 @@ const ManagerCommunications = () => {
                       ))
                     ) : (
                       <SelectItem value="aluno-temp" disabled>
-                        Cadastre alunos para enviar individually
+                        Cadastre alunos para enviar individualmente
                       </SelectItem>
                     )}
                   </SelectContent>

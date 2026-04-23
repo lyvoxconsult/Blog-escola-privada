@@ -1,43 +1,49 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bell } from "lucide-react";
-import { LoadingState } from "@/components/common/LoadingState";
 import { EmptyState } from "@/components/common/EmptyState";
 import { SEO } from "@/components/common/SEO";
-
-interface Notif { id: string; title: string; body: string; created_at: string; read: boolean; }
+import {
+  loadCommunications,
+  markAllCommunicationsAsRead,
+  type Communication,
+} from "@/services/communications";
 
 const Communications = () => {
   const { user } = useAuth();
-  const [items, setItems] = useState<Notif[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState<Communication[]>([]);
 
   useEffect(() => {
     if (!user) return;
-    const load = async () => {
-      const { data } = await supabase
-        .from("notifications")
-        .select("id,title,body,created_at,read")
-        .or(`recipient_id.eq.${user.id},recipient_id.is.null`)
-        .order("created_at", { ascending: false });
-      setItems(data ?? []);
-      setLoading(false);
+    
+    // Carregar comunicações do serviço centralizado
+    const communications = loadCommunications();
+    
+    // Filtrar apenas comunicações para este usuário (broadcast ou direcionado)
+    const userCommunications = communications.filter(
+      (c) => c.recipientId === null || c.recipientId === user.id
+    );
+    
+    setItems(userCommunications);
 
-      // Marca como lidas
-      const unread = (data ?? []).filter((n) => !n.read).map((n) => n.id);
-      if (unread.length) {
-        await supabase.from("notifications").update({ read: true }).in("id", unread);
-      }
-    };
-    load();
+    // Marcar todos como lidos após carregar
+    if (userCommunications.length > 0) {
+      markAllCommunicationsAsRead(user.id);
+    }
   }, [user]);
 
-  const fmt = (iso: string) => new Date(iso).toLocaleString("pt-BR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
-  if (loading) return <LoadingState />;
+  if (!user) return null;
 
   return (
     <div className="space-y-6">
@@ -48,11 +54,19 @@ const Communications = () => {
       </div>
 
       {items.length === 0 ? (
-        <Card><CardContent className="p-6"><EmptyState icon={Bell} title="Sem comunicações" description="Quando houver avisos, aparecerão aqui." /></CardContent></Card>
+        <Card>
+          <CardContent className="p-6">
+            <EmptyState
+              icon={Bell}
+              title="Sem comunicações"
+              description="Quando houver avisos, aparecerão aqui."
+            />
+          </CardContent>
+        </Card>
       ) : (
         <div className="space-y-3">
           {items.map((n) => (
-            <Card key={n.id}>
+            <Card key={n.id} className={!n.read ? "border-l-4 border-l-accent" : ""}>
               <CardContent className="p-5 flex gap-4">
                 <div className="h-10 w-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
                   <Bell className="h-5 w-5" />
@@ -60,9 +74,16 @@ const Communications = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-3 flex-wrap">
                     <h3 className="font-semibold text-primary">{n.title}</h3>
-                    <span className="text-xs text-muted-foreground whitespace-nowrap">{fmt(n.created_at)}</span>
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      {formatDate(n.createdAt)}
+                    </span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{n.body}</p>
+                  {!n.read && (
+                    <Badge variant="default" className="text-xs mt-2 bg-accent">
+                      Novo
+                    </Badge>
+                  )}
                 </div>
               </CardContent>
             </Card>

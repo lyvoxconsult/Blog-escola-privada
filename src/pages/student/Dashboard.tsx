@@ -11,14 +11,15 @@ import { Progress } from "@/components/ui/progress";
 import { LoadingState } from "@/components/common/LoadingState";
 import { EmptyState } from "@/components/common/EmptyState";
 import { SEO } from "@/components/common/SEO";
+import { countUnreadCommunications, loadCommunications } from "@/services/communications";
 
 interface Lesson { id: string; title: string; teacher: string; scheduled_at: string; }
-interface Notification { id: string; title: string; body: string; created_at: string; read: boolean; }
 
 const StudentDashboard = () => {
   const { user } = useAuth();
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [notifs, setNotifs] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [recentNotifs, setRecentNotifs] = useState<{id: string; title: string; body: string}[]>([]);
   const [overall, setOverall] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -26,14 +27,25 @@ const StudentDashboard = () => {
     if (!user) return;
     const load = async () => {
       await seedStudentDataIfEmpty(user.id);
-      const [{ data: l }, { data: n }, { data: p }] = await Promise.all([
+
+      // Carregar do Supabase (lessons e progress)
+      const [{ data: l }, { data: p }] = await Promise.all([
         supabase.from("lessons").select("id,title,teacher,scheduled_at").eq("student_id", user.id).gte("scheduled_at", new Date().toISOString()).order("scheduled_at").limit(3),
-        supabase.from("notifications").select("id,title,body,created_at,read").or(`recipient_id.eq.${user.id},recipient_id.is.null`).order("created_at", { ascending: false }).limit(4),
         supabase.from("progress").select("score").eq("student_id", user.id),
       ]);
       setLessons(l ?? []);
-      setNotifs(n ?? []);
       if (p && p.length) setOverall(Math.round(p.reduce((a, b) => a + b.score, 0) / p.length));
+
+      // Carregar comunicações do serviço centralizado
+      const allComms = loadCommunications();
+      const userComms = allComms.filter(c => c.recipientId === null || c.recipientId === user.id);
+      
+      // Contar não lidos
+      setUnreadCount(countUnreadCommunications(user.id));
+      
+      // Pegar os 4 mais recentes
+      setRecentNotifs(userComms.slice(0, 4).map(c => ({ id: c.id, title: c.title, body: c.body })));
+
       setLoading(false);
     };
     load();
@@ -80,7 +92,7 @@ const StudentDashboard = () => {
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Avisos novos</span>
               <Bell className="h-4 w-4 text-accent" />
             </div>
-            <div className="text-3xl font-bold text-primary">{notifs.filter((n) => !n.read).length}</div>
+            <div className="text-3xl font-bold text-primary">{unreadCount}</div>
             <p className="text-xs text-muted-foreground mt-1">não lidos</p>
           </CardContent>
         </Card>
@@ -121,11 +133,11 @@ const StudentDashboard = () => {
         <Card>
           <CardContent className="p-6">
             <h2 className="text-lg font-display font-semibold text-primary mb-4">Avisos recentes</h2>
-            {notifs.length === 0 ? (
+            {recentNotifs.length === 0 ? (
               <EmptyState icon={Bell} title="Sem avisos" />
             ) : (
               <ul className="space-y-4">
-                {notifs.map((n) => (
+                {recentNotifs.map((n) => (
                   <li key={n.id} className="text-sm">
                     <p className="font-medium text-primary">{n.title}</p>
                     <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{n.body}</p>

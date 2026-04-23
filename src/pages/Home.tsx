@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Globe2, Sparkles, Users, Trophy, GraduationCap, Star, Quote } from "lucide-react";
 import { SEO } from "@/components/common/SEO";
@@ -5,7 +6,7 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { courses } from "@/mocks/courses";
+import { loadCourses, type Course } from "@/services/courses";
 import { testimonials } from "@/mocks/teachers";
 
 const benefits = [
@@ -16,6 +17,25 @@ const benefits = [
 ];
 
 const Home = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  // Carregar cursos do serviço centralizado
+  useEffect(() => {
+    setCourses(loadCourses());
+    
+    // Atualizar quando houver mudanças no localStorage (gestor alterou cursos)
+    const handleStorage = () => setCourses(loadCourses());
+    window.addEventListener("storage", handleStorage);
+    
+    // Atualizar também em intervalos para pegar mudanças dentro da mesma página
+    const interval = setInterval(() => setCourses(loadCourses()), 2000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      clearInterval(interval);
+    };
+  }, []);
+
   const featured = courses.filter((c) => c.highlight).slice(0, 3);
 
   return (
